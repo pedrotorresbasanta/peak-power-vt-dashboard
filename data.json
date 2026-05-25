@@ -1,0 +1,457 @@
+{
+  "last_updated": "2026-05-25T17:25:21.101193Z",
+  "source_file": "VT_Weekly_Template_FINAL.xlsx",
+  "zones": [
+    "Toronto",
+    "Ottawa",
+    "West",
+    "East",
+    "Northwest",
+    "Essa",
+    "Southwest",
+    "Northeast",
+    "Southeast"
+  ],
+  "days_of_week": [
+    "Mon",
+    "Tue",
+    "Wed",
+    "Thu",
+    "Fri",
+    "Sat",
+    "Sun"
+  ],
+  "aggregate": {
+    "total_pnl": 860.6,
+    "active_days": 5,
+    "avg_daily_pnl": 172.12,
+    "best_day_pnl": 1007.05,
+    "worst_day_pnl": -162.64999999999998,
+    "hit_rate": 0.7776666666666667,
+    "total_mwh": 205.0,
+    "model_days": 4,
+    "strategy_days": 1,
+    "capital_deployed": 250000.0,
+    "cumulative_losses": 162.64999999999998,
+    "capital_remaining": 249837.35,
+    "capital_preserved_pct": 0.9993494,
+    "zone_totals": {
+      "Toronto": -36.150000000000006,
+      "Ottawa": -9.9,
+      "West": 0,
+      "East": 0,
+      "Northwest": 0,
+      "Essa": 120.5,
+      "Southwest": 243.55,
+      "Northeast": 542.6,
+      "Southeast": 0
+    },
+    "zone_days_traded": {
+      "Toronto": 2,
+      "Ottawa": 1,
+      "West": 0,
+      "East": 0,
+      "Northwest": 0,
+      "Essa": 2,
+      "Southwest": 1,
+      "Northeast": 2,
+      "Southeast": 0
+    }
+  },
+  "weeks": [
+    {
+      "num": 1,
+      "start_date": "2026-04-18",
+      "end_date": "2026-04-24",
+      "phase": "Phase 1 \u2014 Survival Mode",
+      "prepared_by": "Megan",
+      "capital": 250000.0,
+      "starting_mwh": 100.0,
+      "daily_risk_budget": 8333.333333333334,
+      "summary": {
+        "total_pnl": 860.6,
+        "active_days": 3,
+        "skipped_days": 0,
+        "avg_daily_pnl": 286.8666666666667,
+        "best_day_pnl": 1007.05,
+        "worst_day_pnl": -162.64999999999998,
+        "hit_rate": 0.6665,
+        "total_mwh": 110,
+        "cumulative_losses": 162.65,
+        "sharpe_ratio": 7.23
+      },
+      "capital_remaining": 249837.35,
+      "daily_log": [
+        {
+          "date": "2026-04-19",
+          "day": "Sun",
+          "week_num": 1,
+          "day_type": "Strategy Day",
+          "t2_classified_by": "All",
+          "t1_on_duty": "All",
+          "bid_submitted_by": "Megan",
+          "zones": {
+            "Toronto": 16.2,
+            "Ottawa": null,
+            "West": null,
+            "East": null,
+            "Northwest": null,
+            "Essa": 0,
+            "Southwest": 0,
+            "Northeast": 0,
+            "Southeast": 0
+          },
+          "total_pnl": 16.2,
+          "avg_spread": 13.96,
+          "hit_rate": 0.333,
+          "mwh_submitted": 15.0,
+          "notes": ""
+        },
+        {
+          "date": "2026-04-22",
+          "day": "Wed",
+          "week_num": 1,
+          "day_type": "Model Day",
+          "t2_classified_by": "All",
+          "t1_on_duty": "All",
+          "bid_submitted_by": "Megan",
+          "zones": {
+            "Toronto": null,
+            "Ottawa": null,
+            "West": null,
+            "East": null,
+            "Northwest": null,
+            "Essa": 115.85,
+            "Southwest": 243.55,
+            "Northeast": 647.65,
+            "Southeast": null
+          },
+          "total_pnl": 1007.05,
+          "avg_spread": 18.55,
+          "hit_rate": 1,
+          "mwh_submitted": 45.0,
+          "notes": ""
+        },
+        {
+          "date": "2026-04-23",
+          "day": "Thu",
+          "week_num": 1,
+          "day_type": "Model Day",
+          "t2_classified_by": "All",
+          "t1_on_duty": "All",
+          "bid_submitted_by": "Megan",
+          "zones": {
+            "Toronto": -52.35,
+            "Ottawa": -9.9,
+            "West": null,
+            "East": null,
+            "Northwest": null,
+            "Essa": 4.65,
+            "Southwest": null,
+            "Northeast": -105.04999999999998,
+            "Southeast": null
+          },
+          "total_pnl": -162.64999999999998,
+          "avg_spread": null,
+          "hit_rate": null,
+          "mwh_submitted": 50.0,
+          "notes": ""
+        }
+      ],
+      "zonal_matrix": {
+        "Toronto": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": -52.35,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 16.2
+        },
+        "Ottawa": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": -9.9,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "West": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "East": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Northwest": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Essa": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 115.85,
+          "Thu": 4.65,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Southwest": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 243.55,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Northeast": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 647.65,
+          "Thu": -105.04999999999998,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Southeast": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "_totals": {
+          "Toronto": -36.150000000000006,
+          "Ottawa": -9.9,
+          "West": 0.0,
+          "East": 0.0,
+          "Northwest": 0.0,
+          "Essa": 120.5,
+          "Southwest": 243.55,
+          "Northeast": 542.6,
+          "Southeast": 0.0
+        },
+        "_days_traded": {
+          "Toronto": 2,
+          "Ottawa": 1,
+          "West": 0,
+          "East": 0,
+          "Northwest": 0,
+          "Essa": 2,
+          "Southwest": 1,
+          "Northeast": 2,
+          "Southeast": 0
+        }
+      },
+      "insights": {
+        "learnings": [],
+        "issues": [],
+        "action": {}
+      }
+    },
+    {
+      "num": 2,
+      "start_date": "2026-04-27",
+      "end_date": "2026-05-03",
+      "phase": "Phase 1 \u2014 Survival Mode",
+      "prepared_by": "Jeremy",
+      "capital": 250000.0,
+      "starting_mwh": 100.0,
+      "daily_risk_budget": 0.0,
+      "summary": {
+        "total_pnl": 0,
+        "active_days": 2,
+        "skipped_days": 0,
+        "avg_daily_pnl": 0,
+        "best_day_pnl": 0,
+        "worst_day_pnl": 0,
+        "hit_rate": 1,
+        "total_mwh": 95,
+        "cumulative_losses": 0
+      },
+      "capital_remaining": 250000.0,
+      "daily_log": [
+        {
+          "date": "2026-04-29",
+          "day": "Wed",
+          "week_num": 2,
+          "day_type": "Model Day",
+          "t2_classified_by": "All",
+          "t1_on_duty": "All",
+          "bid_submitted_by": "Jeremy",
+          "zones": {
+            "Toronto": null,
+            "Ottawa": null,
+            "West": null,
+            "East": null,
+            "Northwest": null,
+            "Essa": null,
+            "Southwest": null,
+            "Northeast": null,
+            "Southeast": null
+          },
+          "total_pnl": 0.0,
+          "avg_spread": 18.55,
+          "hit_rate": 1,
+          "mwh_submitted": 45.0,
+          "notes": ""
+        },
+        {
+          "date": "2026-04-30",
+          "day": "Thu",
+          "week_num": 2,
+          "day_type": "Model Day",
+          "t2_classified_by": "All",
+          "t1_on_duty": "All",
+          "bid_submitted_by": "Megan",
+          "zones": {
+            "Toronto": null,
+            "Ottawa": null,
+            "West": null,
+            "East": null,
+            "Northwest": null,
+            "Essa": null,
+            "Southwest": null,
+            "Northeast": null,
+            "Southeast": null
+          },
+          "total_pnl": 0.0,
+          "avg_spread": null,
+          "hit_rate": null,
+          "mwh_submitted": 50.0,
+          "notes": ""
+        }
+      ],
+      "zonal_matrix": {
+        "Toronto": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Ottawa": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "West": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "East": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Northwest": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Essa": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Southwest": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Northeast": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "Southeast": {
+          "Mon": 0.0,
+          "Tue": 0.0,
+          "Wed": 0.0,
+          "Thu": 0.0,
+          "Fri": 0.0,
+          "Sat": 0.0,
+          "Sun": 0.0
+        },
+        "_totals": {
+          "Toronto": 0.0,
+          "Ottawa": 0.0,
+          "West": 0.0,
+          "East": 0.0,
+          "Northwest": 0.0,
+          "Essa": 0.0,
+          "Southwest": 0.0,
+          "Northeast": 0.0,
+          "Southeast": 0.0
+        },
+        "_days_traded": {
+          "Toronto": 0,
+          "Ottawa": 0,
+          "West": 0,
+          "East": 0,
+          "Northwest": 0,
+          "Essa": 0,
+          "Southwest": 0,
+          "Northeast": 0,
+          "Southeast": 0
+        }
+      },
+      "insights": {
+        "learnings": [],
+        "issues": [],
+        "action": {}
+      }
+    }
+  ]
+}

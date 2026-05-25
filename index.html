@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Peak Power | Virtual Trader Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,700;9..40,800&family=JetBrains+Mono:wght@400;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --bg:#0d1009;--bg2:#161a13;--card:#1b1f18;--card-h:#222720;
+  --elev:#252d22;--inp:#131710;
+  --b1:rgba(255,255,255,.07);--b2:rgba(255,255,255,.11);--b3:rgba(255,255,255,.20);
+  --t1:#f0f2ed;--t2:#8a9490;--t3:#5a6460;
+  --acc:#f8941f;
+  --teal:#2dd4a8;--teal-b:rgba(45,212,168,.12);--teal-br:rgba(45,212,168,.28);
+  --amb:#f8941f;--amb-b:rgba(248,148,31,.12);--amb-br:rgba(248,148,31,.28);
+  --cor:#e05555;--cor-b:rgba(224,85,85,.12);--cor-br:rgba(224,85,85,.28);
+  --grn:#3ecf74;--grn-b:rgba(62,207,116,.10);--grn-br:rgba(62,207,116,.25);
+  --r:10px;--rl:14px;--rx:18px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--t1);line-height:1.5;-webkit-font-smoothing:antialiased}
+
+/* ── Nav ── */
+.nav{position:sticky;top:0;z-index:100;background:rgba(13,16,9,.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;padding:0 24px;height:48px}
+.nav-brand{font-family:"Fraunces",serif;font-weight:900;font-size:15px;color:var(--t1);display:flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
+.nav-brand .dot{width:6px;height:6px;background:var(--acc);border-radius:50%;box-shadow:0 0 7px rgba(248,148,31,.55)}
+.nav-ts{font-family:"JetBrains Mono",monospace;font-size:9.5px;color:var(--t3)}
+.nav-live{display:inline-flex;align-items:center;gap:5px;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--teal);border:1px solid var(--teal-br);background:var(--teal-b);padding:3px 9px;border-radius:999px;margin-left:12px}
+.nav-live::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--teal);display:block;animation:pulse 2s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+
+/* ── Loading ── */
+#loading{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:50vh;gap:14px}
+.spinner{width:28px;height:28px;border:2px solid var(--b2);border-top-color:var(--acc);border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loading p{font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--t3)}
+
+/* ── Page ── */
+.page{max-width:1420px;margin:0 auto;padding:20px 24px 80px}
+
+/* ── Switcher ── */
+.switcher{position:sticky;top:48px;z-index:90;background:rgba(13,16,9,.92);backdrop-filter:blur(16px);border:1px solid var(--b1);border-radius:999px;padding:6px;display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.toggle{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;background:var(--inp);color:var(--t2);border:1px solid var(--b1);padding:7px 13px;border-radius:999px;cursor:pointer;transition:all .15s}
+.toggle:hover,.toggle.active{background:var(--amb-b);border-color:var(--amb-br);color:var(--acc)}
+
+/* ── Views ── */
+.view{display:none}.view.active{display:block}
+
+/* ── Title block ── */
+.title-block{background:linear-gradient(135deg,#0d1009,#162016 50%,#0a2a1a);border:1px solid var(--b2);border-radius:var(--rx);padding:20px 24px 18px;position:relative;overflow:hidden;margin-bottom:14px}
+.title-block::before{content:"";position:absolute;top:-80px;right:-50px;width:220px;height:220px;background:radial-gradient(circle,rgba(248,148,31,.10) 0%,transparent 70%);pointer-events:none}
+.tb-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:10px}
+.tb-eyebrow{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.13em;text-transform:uppercase;color:var(--acc);margin-bottom:4px}
+.tb-title{font-family:"Fraunces",serif;font-size:29px;font-weight:900;line-height:1.1;letter-spacing:-.02em}
+.tb-version{font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--t3);margin-top:3px}
+.tb-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:999px;font-size:11px;font-weight:700;flex-shrink:0;background:var(--teal-b);color:var(--teal);border:1px solid var(--teal-br)}
+.summary-bar{background:var(--grn-b);border:1px solid var(--grn-br);border-radius:var(--r);padding:11px 16px;display:flex;gap:12px;align-items:flex-start}
+.summary-bar p{font-size:12.5px;line-height:1.6}
+.summary-bar strong{color:var(--grn);font-weight:700}
+.summary-bar>span{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:700;color:var(--grn);white-space:nowrap;padding-top:2px}
+
+/* ── Section divider ── */
+.sd{margin:24px 0 14px;display:flex;align-items:center;gap:12px}
+.sd h2{font-family:"Fraunces",serif;font-size:17px;font-weight:900;white-space:nowrap}
+.sd .ln{flex:1;height:1px;background:var(--b2)}
+.sd .ct{font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--t3);padding:2px 9px;border:1px solid var(--b1);border-radius:999px;white-space:nowrap}
+
+/* ── KPI grid ── */
+.kpis{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+.kpi{background:var(--card);border:1px solid var(--b1);border-radius:var(--rl);padding:14px 16px;min-height:108px}
+.kpi.primary{background:linear-gradient(135deg,var(--inp),#241b10);border-color:var(--amb-br)}
+.kpi .lbl{font-family:"JetBrains Mono",monospace;font-size:8.2px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-bottom:5px}
+.kpi .val{font-family:"JetBrains Mono",monospace;font-size:18px;font-weight:800;color:var(--t1);letter-spacing:-.02em}
+.kpi.primary .val{color:var(--acc)}
+.kpi .sub{font-size:11px;color:var(--t2);margin-top:5px;line-height:1.35}
+
+/* ── Panel ── */
+.grid2{display:grid;grid-template-columns:1.1fr .9fr;gap:14px}
+.panel{background:var(--card);border:1px solid var(--b1);border-radius:var(--rl);overflow:hidden}
+.panel-head{background:var(--inp);padding:10px 14px;border-bottom:1px solid var(--b1);display:flex;align-items:center;justify-content:space-between;gap:10px}
+.panel-head h3{font-family:"JetBrains Mono",monospace;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase}
+.panel-body{padding:14px}
+.table-wrap{overflow-x:auto}
+
+/* ── Tables ── */
+table{border-collapse:collapse;width:100%}
+.main-table th{font-family:"JetBrains Mono",monospace;font-size:8px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--t3);padding:7px 10px;text-align:left;border-bottom:1px solid var(--b1);background:var(--inp);white-space:nowrap}
+.main-table td{font-size:11.5px;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.045);vertical-align:top;color:var(--t2)}
+.main-table tr:hover td{background:rgba(255,255,255,.02)}
+.main-table td strong{color:var(--t1)}
+.daily-total td{background:rgba(248,148,31,.06)!important;font-weight:800}
+
+/* ── Tags ── */
+.tag{font-family:"JetBrains Mono",monospace;font-size:8px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;padding:2px 7px;border-radius:999px;display:inline-flex;white-space:nowrap}
+.tag.model{background:var(--teal-b);color:var(--teal);border:1px solid var(--teal-br)}
+.tag.strategy{background:var(--amb-b);color:var(--amb);border:1px solid var(--amb-br)}
+.tag.skip{background:rgba(90,100,96,.18);color:var(--t3);border:1px solid var(--b1)}
+
+/* ── Zone pills ── */
+.zone-pill{display:inline-flex;gap:5px;align-items:center;background:rgba(255,255,255,.04);border:1px solid var(--b1);padding:2px 7px;border-radius:999px;font-size:10px;margin:1px 3px 2px 0;white-space:nowrap}
+
+/* ── Metric helpers ── */
+.metric{font-family:"JetBrains Mono",monospace;font-weight:700;white-space:nowrap}
+.pos{color:var(--teal)!important}.neg{color:var(--cor)!important}.zero{color:var(--t3)!important}.muted{color:var(--t3)!important}
+.mono{font-family:"JetBrains Mono",monospace}
+
+/* ── Hit-rate bar ── */
+.rate{height:6px;width:54px;background:rgba(255,255,255,.08);border-radius:6px;display:inline-block;margin-right:6px;vertical-align:middle;overflow:hidden}
+.rate span{display:block;height:100%;background:var(--teal)}
+
+/* ── Metric cards row ── */
+.metrics-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.metric-card{background:var(--card);border:1px solid var(--b1);border-radius:var(--rl);padding:14px 16px}
+.metric-card.dark{background:var(--inp);border-color:var(--amb-br)}
+.metric-card .num{font-family:"JetBrains Mono",monospace;font-weight:800;font-size:18px;color:var(--t1)}
+.metric-card .label{font-family:"JetBrains Mono",monospace;font-size:8.2px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--t3);margin-top:3px}
+.metric-card .desc{font-size:11px;color:var(--t2);margin-top:4px}
+
+/* ── Zone grid ── */
+.zone-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.zone-card{background:var(--inp);border:1px solid var(--b1);border-radius:var(--r);padding:10px 12px}
+.zc-head{display:flex;justify-content:space-between;gap:10px;font-size:12px;font-weight:700;margin-bottom:7px}
+.zc-head span{color:var(--t1)}
+.bar{height:8px;background:rgba(255,255,255,.06);border-radius:999px;overflow:hidden;margin-bottom:6px}
+.bar i{height:100%;display:block;border-radius:999px}
+.bar i.pos{background:var(--teal)}.bar i.neg{background:var(--cor)}.bar i.zero{background:var(--t3);opacity:.45}
+
+/* ── Insights ── */
+.insights{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.insight-card{background:var(--card);border:1px solid var(--b1);border-radius:var(--rl);padding:14px 16px}
+.insight-card.action{background:linear-gradient(180deg,var(--inp),#17120b);border-color:var(--amb-br)}
+.insight-title{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:700;letter-spacing:.11em;text-transform:uppercase;color:var(--acc);margin-bottom:10px}
+.insight-line{display:grid;grid-template-columns:82px 1fr;gap:10px;border-top:1px solid rgba(255,255,255,.05);padding:8px 0}
+.insight-line:first-of-type{border-top:0}
+.insight-line span{font-family:"JetBrains Mono",monospace;font-size:9px;font-weight:700;color:var(--t3)}
+.insight-line p{font-size:12px;color:var(--t2)}
+
+/* ── Footer ── */
+.footer-tag{text-align:center;font-family:"JetBrains Mono",monospace;font-size:9px;color:var(--t3);padding:24px 0}
+
+/* ── Responsive ── */
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(3,1fr)}.grid2,.insights{grid-template-columns:1fr}.zone-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){.kpis,.metrics-row,.zone-grid{grid-template-columns:1fr}.page{padding:14px}.nav-ts{display:none}}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a class="nav-brand" onclick="showView('summary')">
+    <span class="dot"></span>Peak Power — Virtual Trader
+    <span class="nav-live">LIVE</span>
+  </a>
+  <span class="nav-ts" id="nav-ts">Loading…</span>
+</nav>
+
+<div class="page">
+  <div id="loading"><div class="spinner"></div><p>Loading dashboard data…</p></div>
+  <div id="app" style="display:none">
+    <div class="switcher" id="switcher"></div>
+    <div id="views"></div>
+    <div class="footer-tag">Virtual Trading · Weekly Performance Review · Peak Power · Confidential</div>
+  </div>
+</div>
+
+<script>
+// ── Formatting helpers ───────────────────────────────────────────────────────
+const fmt$ = (v, always = false) => {
+  if (v == null) return '—';
+  const n = parseFloat(v);
+  if (isNaN(n)) return '—';
+  const s = new Intl.NumberFormat('en-CA', {
+    style: 'currency', currency: 'CAD',
+    minimumFractionDigits: 2, maximumFractionDigits: 2,
+  }).format(Math.abs(n)).replace('CA', '').replace('$', '$');
+  return (n < 0 ? '-' : (always && n > 0 ? '+' : '')) + '$' +
+    Math.abs(n).toLocaleString('en-CA', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+};
+const fmtPct = v => v == null ? '—' : (v * 100).toFixed(2) + '%';
+const fmtN   = v => v == null ? '—' : Number(v).toLocaleString('en-CA', {maximumFractionDigits: 2});
+const pnlCls = v => {
+  if (v == null) return 'muted';
+  const n = parseFloat(v);
+  if (n > 0) return 'pos'; if (n < 0) return 'neg'; return 'zero';
+};
+const fmtDate = iso => {
+  if (!iso) return '—';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'});
+};
+const fmtDateShort = iso => {
+  if (!iso) return '—';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'});
+};
+const fmtDay = iso => {
+  if (!iso) return '—';
+  const d = new Date(iso + 'T00:00:00');
+  return d.toLocaleDateString('en-CA', {weekday:'short'});
+};
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+// ── View switcher ────────────────────────────────────────────────────────────
+function showView(id) {
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  const t = document.getElementById('view-' + id);
+  if (t) t.classList.add('active');
+  document.querySelectorAll('.toggle').forEach(b => b.classList.remove('active'));
+  const btn = document.querySelector(`.toggle[data-view="${id}"]`);
+  if (btn) btn.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// ── Zone bar card ────────────────────────────────────────────────────────────
+function zoneCardsHTML(totals, daysTraded) {
+  const maxAbs = Math.max(...Object.values(totals).map(Math.abs), 1);
+  return Object.entries(totals).map(([z, v]) => {
+    const cls = v > 0 ? 'pos' : v < 0 ? 'neg' : 'zero';
+    const pct = Math.round(Math.abs(v) / maxAbs * 100);
+    return `<div class="zone-card">
+      <div class="zc-head"><span>${esc(z)}</span><b class="${cls}">${fmt$(v)}</b></div>
+      <div class="bar"><i class="${cls}" style="width:${pct}%"></i></div>
+      <div class="muted mono">${daysTraded[z] ?? 0} days traded</div>
+    </div>`;
+  }).join('');
+}
+
+// ── Daily log table rows ─────────────────────────────────────────────────────
+function dailyLogRows(log, zones) {
+  if (!log.length) return `<tr><td colspan="11" class="muted" style="text-align:center;padding:20px">No entries yet</td></tr>`;
+  return log.map(d => {
+    const dt   = d.day_type || '';
+    const tagC = dt === 'Model Day' ? 'model' : dt === 'Strategy Day' ? 'strategy' : 'skip';
+    const pills = zones.filter(z => d.zones[z] != null && d.zones[z] !== 0)
+      .map(z => `<span class="zone-pill">${esc(z)} <b class="${pnlCls(d.zones[z])}">${fmt$(d.zones[z])}</b></span>`)
+      .join('');
+    const hr = d.hit_rate != null
+      ? `<div class="rate"><span style="width:${Math.min(100,(d.hit_rate*100)).toFixed(1)}%"></span></div><b>${(d.hit_rate*100).toFixed(1)}%</b>`
+      : `<div class="rate"><span style="width:0%"></span></div><b>—</b>`;
+    return `<tr>
+      <td><strong>${fmtDate(d.date)}</strong><br><span class="mono muted">${esc(d.day || fmtDay(d.date))}</span></td>
+      <td><span class="tag ${tagC}">${esc(dt || '—')}</span></td>
+      <td>${esc(d.t2_classified_by)}</td>
+      <td>${esc(d.t1_on_duty)}</td>
+      <td>${esc(d.bid_submitted_by)}</td>
+      <td>${pills || '<span class="muted">No zonal P&amp;L entered</span>'}</td>
+      <td class="metric ${pnlCls(d.total_pnl)}">${fmt$(d.total_pnl)}</td>
+      <td>${d.avg_spread != null ? fmt$(d.avg_spread) : '—'}</td>
+      <td>${hr}</td>
+      <td>${fmtN(d.mwh_submitted)}</td>
+      <td><span class="muted">${esc(d.notes) || '—'}</span></td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Zonal matrix table ───────────────────────────────────────────────────────
+function zonalMatrixTable(matrix, zones, days) {
+  const totals     = matrix._totals      || {};
+  const daysTraded = matrix._days_traded || {};
+  // Build day-column daily totals
+  const dayTotals = {};
+  days.forEach(d => {
+    dayTotals[d] = zones.reduce((s, z) => s + (matrix[z]?.[d] ?? 0), 0);
+  });
+  const grandTotal = Object.values(totals).reduce((s, v) => s + v, 0);
+
+  const zoneRows = zones.map(z => {
+    const cells = days.map(d => {
+      const v = matrix[z]?.[d] ?? 0;
+      return `<td class="metric ${pnlCls(v)}">${fmt$(v)}</td>`;
+    }).join('');
+    return `<tr>
+      <td class="zone-name">${esc(z)}</td>
+      ${cells}
+      <td class="metric total ${pnlCls(totals[z])}">${fmt$(totals[z])}</td>
+      <td class="mono muted">${daysTraded[z] ?? 0}</td>
+    </tr>`;
+  }).join('');
+
+  const totalRow = days.map(d => `<td class="metric ${pnlCls(dayTotals[d])}">${fmt$(dayTotals[d])}</td>`).join('');
+
+  return `<table class="main-table zonal-table">
+    <thead><tr>
+      <th>Zone</th>
+      ${days.map(d => `<th>${d}</th>`).join('')}
+      <th>Total</th><th>Days</th>
+    </tr></thead>
+    <tbody>
+      ${zoneRows}
+      <tr class="daily-total">
+        <td class="zone-name">Daily Total</td>
+        ${totalRow}
+        <td class="metric total ${pnlCls(grandTotal)}">${fmt$(grandTotal)}</td>
+        <td class="mono muted">—</td>
+      </tr>
+    </tbody>
+  </table>`;
+}
+
+// ── Week-by-week rollup table ────────────────────────────────────────────────
+function weekRollupRows(weeks) {
+  return weeks.map(w => {
+    const s = w.summary || {};
+    return `<tr>
+      <td><strong>${fmtDateShort(w.start_date)}</strong><br><span class="mono muted">Week ${w.num}</span></td>
+      <td>${esc(w.prepared_by)}</td>
+      <td>${esc(w.phase)}</td>
+      <td class="metric ${pnlCls(s.total_pnl)}">${fmt$(s.total_pnl)}</td>
+      <td>${s.active_days ?? '—'}</td>
+      <td>${s.hit_rate != null ? fmtPct(s.hit_rate) : '—'}</td>
+      <td>${fmtN(s.total_mwh)}</td>
+      <td>${fmt$(w.capital_remaining)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ── Insights section ─────────────────────────────────────────────────────────
+function insightsHTML(ins) {
+  const mkLines = (arr, count = 3) => {
+    const lines = [];
+    for (let i = 0; i < count; i++) {
+      const txt = arr[i] || '';
+      lines.push(`<div class="insight-line"><span>#${i+1}</span><p>${esc(txt) || '<span class="muted">—</span>'}</p></div>`);
+    }
+    return lines.join('');
+  };
+  const action = ins.action || {};
+  const actionLines = Object.entries(action).slice(0, 4).map(([k, v]) =>
+    `<div class="insight-line"><span>${esc(k)}</span><p>${esc(v)}</p></div>`
+  ).join('') || `<div class="insight-line"><span>Action</span><p class="muted">—</p></div>`;
+
+  return `<div class="insights">
+    <div class="insight-card">
+      <div class="insight-title">Top Learnings</div>
+      ${mkLines(ins.learnings || [])}
+    </div>
+    <div class="insight-card">
+      <div class="insight-title">Repeated Issues</div>
+      ${mkLines(ins.issues || [])}
+    </div>
+    <div class="insight-card action">
+      <div class="insight-title">One Improvement Action</div>
+      ${actionLines}
+    </div>
+  </div>`;
+}
+
+// ── Summary view ─────────────────────────────────────────────────────────────
+function renderSummary(data) {
+  const a = data.aggregate;
+  const nWeeks = data.weeks.length;
+  return `
+  <div class="title-block">
+    <div class="tb-top">
+      <div>
+        <div class="tb-eyebrow">Virtual Trading — Aggregated Performance</div>
+        <div class="tb-title">Summary Since Beginning</div>
+        <div class="tb-version">${nWeeks} week${nWeeks !== 1 ? 's' : ''} in registry · ${a.active_days} active trading days · source: VT_Weekly_Template_FINAL.xlsx</div>
+      </div>
+      <div class="tb-badge">Aggregate View</div>
+    </div>
+    <div class="summary-bar">
+      <span>Summary</span>
+      <p><strong>Front page:</strong> aggregated results calculated from the workbook's weekly registry and daily log. Use the toggle above to inspect a specific week.</p>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi primary">
+      <div class="lbl">Total P&L Since Start</div>
+      <div class="val ${pnlCls(a.total_pnl)}">${fmt$(a.total_pnl)}</div>
+      <div class="sub">${a.active_days} active days</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Average Daily P&L</div>
+      <div class="val ${pnlCls(a.avg_daily_pnl)}">${fmt$(a.avg_daily_pnl)}</div>
+      <div class="sub">Across all active trading days</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Best Day</div>
+      <div class="val ${pnlCls(a.best_day_pnl)}">${fmt$(a.best_day_pnl)}</div>
+      <div class="sub">Highest single-day P&L</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Worst Day</div>
+      <div class="val ${pnlCls(a.worst_day_pnl)}">${fmt$(a.worst_day_pnl)}</div>
+      <div class="sub">Lowest single-day active P&L</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Overall Hit Rate</div>
+      <div class="val">${fmtPct(a.hit_rate)}</div>
+      <div class="sub">Average of populated hit-rate rows</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Total MWh Submitted</div>
+      <div class="val">${fmtN(a.total_mwh)}</div>
+      <div class="sub">Model days: ${a.model_days} · Strategy days: ${a.strategy_days}</div>
+    </div>
+  </div>
+
+  <div class="sd"><h2>Week-by-Week Rollup</h2><div class="ln"></div><span class="ct">Week start dates from 1_Week Info</span></div>
+  <div class="panel"><div class="table-wrap">
+    <table class="main-table"><thead><tr>
+      <th>Week Start</th><th>Prepared By</th><th>Phase</th>
+      <th>Weekly P&L</th><th>Active Days</th><th>Hit Rate</th><th>MWh</th><th>Capital Remaining</th>
+    </tr></thead>
+    <tbody>${weekRollupRows(data.weeks)}</tbody>
+    </table>
+  </div></div>
+
+  <div class="sd"><h2>Aggregated Zonal P&L</h2><div class="ln"></div><span class="ct">All daily log rows since beginning</span></div>
+  <div class="grid2">
+    <div class="panel"><div class="table-wrap">
+      <table class="main-table"><thead><tr><th>Zone</th><th>Total P&L</th><th>Days Traded</th></tr></thead>
+      <tbody>${data.zones.map(z => `<tr>
+        <td class="zone-name">${esc(z)}</td>
+        <td class="metric ${pnlCls(a.zone_totals[z])}">${fmt$(a.zone_totals[z])}</td>
+        <td class="mono muted">${a.zone_days_traded[z] ?? 0}</td>
+      </tr>`).join('')}</tbody>
+      </table>
+    </div></div>
+    <div class="panel">
+      <div class="panel-head"><h3>Aggregate P&L by Zone</h3><span class="mono muted">absolute scale</span></div>
+      <div class="panel-body"><div class="zone-grid">
+        ${zoneCardsHTML(a.zone_totals, a.zone_days_traded)}
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sd"><h2>Aggregate Capital View</h2><div class="ln"></div><span class="ct">Derived from all logged daily losses</span></div>
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="num">${fmt$(a.capital_deployed)}</div>
+      <div class="label">Capital Deployed</div>
+      <div class="desc">First registered week</div>
+    </div>
+    <div class="metric-card">
+      <div class="num neg">${fmt$(a.cumulative_losses)}</div>
+      <div class="label">Cumulative Losses</div>
+      <div class="desc">Absolute value of negative daily P&L rows</div>
+    </div>
+    <div class="metric-card">
+      <div class="num">${fmt$(a.capital_remaining)}</div>
+      <div class="label">Capital Remaining</div>
+      <div class="desc">Capital deployed less cumulative losses</div>
+    </div>
+    <div class="metric-card dark">
+      <div class="num pos">${fmtPct(a.capital_preserved_pct)}</div>
+      <div class="label">Capital Preserved</div>
+      <div class="desc">Since beginning</div>
+    </div>
+  </div>`;
+}
+
+// ── Per-week view ────────────────────────────────────────────────────────────
+function renderWeekView(w, zones, days) {
+  const s = w.summary || {};
+  const capital    = w.capital     || 0;
+  const capRem     = w.capital_remaining ?? capital;
+  const capPctPct  = capital ? (capRem / capital * 100).toFixed(2) + '%' : '—';
+  const capRemFmt  = fmt$(capRem);
+  const sharpeFmt  = s.sharpe_ratio != null ? parseFloat(s.sharpe_ratio).toFixed(2) : '—';
+  const cumLoss    = s.cumulative_losses != null ? Math.abs(s.cumulative_losses) : 0;
+  const dRisk      = w.daily_risk_budget || 0;
+  const cumLossCls = cumLoss > 0 ? 'pos' : 'zero';
+
+  return `
+  <div class="title-block">
+    <div class="tb-top">
+      <div>
+        <div class="tb-eyebrow">Virtual Trading — Weekly Performance Review</div>
+        <div class="tb-title">Week of ${fmtDateShort(w.start_date)} – ${fmtDateShort(w.end_date)}</div>
+        <div class="tb-version">Week #${w.num} · ${esc(w.phase)} · Prepared by ${esc(w.prepared_by)}</div>
+      </div>
+      <div class="tb-badge">Week Start: ${fmtDateShort(w.start_date)}</div>
+    </div>
+    <div class="summary-bar">
+      <span>Source</span>
+      <p><strong>Week view:</strong> values shown here are pulled from the workbook records for week ${w.num}. Select another week or the aggregate summary from the toggle above.</p>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi primary">
+      <div class="lbl">Total Weekly P&L</div>
+      <div class="val ${pnlCls(s.total_pnl)}">${fmt$(s.total_pnl)}</div>
+      <div class="sub">${s.active_days ?? 0} daily log rows shown</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Average Daily P&L</div>
+      <div class="val ${pnlCls(s.avg_daily_pnl)}">${fmt$(s.avg_daily_pnl)}</div>
+      <div class="sub">Active trading days only</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Best Day</div>
+      <div class="val ${pnlCls(s.best_day_pnl)}">${fmt$(s.best_day_pnl)}</div>
+      <div class="sub">Highest single-day P&L</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Worst Day</div>
+      <div class="val ${pnlCls(s.worst_day_pnl)}">${fmt$(s.worst_day_pnl)}</div>
+      <div class="sub">Lowest single-day active P&L</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Overall Hit Rate</div>
+      <div class="val">${s.hit_rate != null ? fmtPct(s.hit_rate) : '—'}</div>
+      <div class="sub">Average hit rate across active days</div>
+    </div>
+    <div class="kpi">
+      <div class="lbl">Total MWh Submitted</div>
+      <div class="val">${fmtN(s.total_mwh)}</div>
+      <div class="sub">Starting MWh: ${fmtN(w.starting_mwh)}</div>
+    </div>
+  </div>
+
+  <div class="sd"><h2>Daily Performance Summary</h2><div class="ln"></div><span class="ct">Week ${w.num} · from 2_Daily Log</span></div>
+  <div class="panel"><div class="table-wrap">
+    <table class="main-table"><thead><tr>
+      <th>Date</th><th>Day Type</th><th>T-2 Classified</th><th>T-1 On Duty</th>
+      <th>Bid Submitted</th><th>Zones Traded</th><th>Total P&L</th>
+      <th>Avg Spread</th><th>Hit Rate</th><th>MWh</th><th>Notes</th>
+    </tr></thead>
+    <tbody>${dailyLogRows(w.daily_log || [], zones)}</tbody>
+    </table>
+  </div></div>
+
+  <div class="sd"><h2>Risk &amp; Exposure Metrics</h2><div class="ln"></div><span class="ct">Week ${w.num} · Weekly Summary</span></div>
+  <div class="metrics-row">
+    <div class="metric-card">
+      <div class="num">${fmt$(dRisk)}</div>
+      <div class="label">Daily Risk Budget</div>
+      <div class="desc">Capital deployed / 30 days</div>
+    </div>
+    <div class="metric-card">
+      <div class="num">${fmt$(capital)}</div>
+      <div class="label">Capital Deployed</div>
+      <div class="desc">From Week Info</div>
+    </div>
+    <div class="metric-card">
+      <div class="num ${cumLossCls}">${fmt$(cumLoss)}</div>
+      <div class="label">Cumulative Losses</div>
+      <div class="desc">Workbook weekly value</div>
+    </div>
+    <div class="metric-card dark">
+      <div class="num pos">${capPctPct}</div>
+      <div class="label">Capital Preserved</div>
+      <div class="desc">Capital remaining: ${capRemFmt} · Sharpe: ${sharpeFmt}</div>
+    </div>
+  </div>
+
+  <div class="sd"><h2>Zonal P&L Matrix</h2><div class="ln"></div><span class="ct">Week ${w.num} · zeros grey · gains green · losses red</span></div>
+  <div class="grid2">
+    <div class="panel"><div class="table-wrap">
+      ${zonalMatrixTable(w.zonal_matrix || {}, zones, days)}
+    </div></div>
+    <div class="panel">
+      <div class="panel-head"><h3>Weekly P&L by Zone</h3><span class="mono muted">absolute scale</span></div>
+      <div class="panel-body"><div class="zone-grid">
+        ${zoneCardsHTML(
+          w.zonal_matrix?._totals || Object.fromEntries(zones.map(z => [z, 0])),
+          w.zonal_matrix?._days_traded || Object.fromEntries(zones.map(z => [z, 0]))
+        )}
+      </div></div>
+    </div>
+  </div>
+
+  <div class="sd"><h2>Learnings · Issues · Action</h2><div class="ln"></div><span class="ct">Week ${w.num}</span></div>
+  ${insightsHTML(w.insights || {})}`;
+}
+
+// ── Main render ──────────────────────────────────────────────────────────────
+function render(data) {
+  const zones = data.zones;
+  const days  = data.days_of_week;
+
+  // Switcher buttons
+  const switcher = document.getElementById('switcher');
+  const sumBtn = `<button class="toggle active" data-view="summary" onclick="showView('summary')">All Weeks Summary</button>`;
+  const weekBtns = data.weeks.map(w =>
+    `<button class="toggle" data-view="week-${w.num}" onclick="showView('week-${w.num}')">${fmtDateShort(w.start_date)}</button>`
+  ).join('');
+  switcher.innerHTML = sumBtn + weekBtns;
+
+  // Views
+  const views = document.getElementById('views');
+  const sumSection = `<section class="view active" id="view-summary">${renderSummary(data)}</section>`;
+  const weekSections = data.weeks.map(w =>
+    `<section class="view" id="view-week-${w.num}">${renderWeekView(w, zones, days)}</section>`
+  ).join('');
+  views.innerHTML = sumSection + weekSections;
+
+  // Timestamp
+  const ts = new Date(data.last_updated);
+  document.getElementById('nav-ts').textContent =
+    'Updated ' + ts.toLocaleDateString('en-CA', {month:'short', day:'numeric', year:'numeric'}) +
+    ' ' + ts.toLocaleTimeString('en-CA', {hour:'2-digit', minute:'2-digit'}) + ' UTC';
+
+  // Show app
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+}
+
+// ── Bootstrap ────────────────────────────────────────────────────────────────
+async function init() {
+  try {
+    const resp = await fetch('data.json?t=' + Date.now());
+    if (!resp.ok) throw new Error('HTTP ' + resp.status);
+    render(await resp.json());
+  } catch (e) {
+    document.getElementById('loading').innerHTML =
+      `<p style="color:var(--cor)">Failed to load data.json: ${e.message}</p>
+       <p style="color:var(--t3);font-size:11px;margin-top:8px">Run update_data.py or open via a local server.</p>`;
+  }
+}
+
+init();
+</script>
+</body>
+</html>
